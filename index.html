@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario · @baliteacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+  /* ============ CONFIGURA AQUÍ TUS ENLACES CSV ============ */
+  /* (esto también se define en el <script> de abajo, no aquí) */
+
+  :root{
+    --bg: #FFFBEA;
+    --bg-card: #FFFFFF;
+    --ink: #3a3630;
+    --ink-soft: #6b6558;
+    --blue: #29ABE2;
+    --purple: #8E44AD;
+    --line: #f0e9cf;
+
+    --grammar: #96F099;
+    --vocabulary: #aeeae8;
+    --games: #c2b3f4;
+    --tasks: #f1bada;
+    --writing: #f4c6ac;
+    --reading: #fcffae;
+    --listening: #a8d4f5;
+    --speaking: #f4a6a6;
+    --culture: #b8f4d8;
+    --mediation: #e0c9a6;
+
+    --a1: #96F099;
+    --a2: #aeeae8;
+    --b1: #c2b3f4;
+    --b2: #f1bada;
+    --c1: #f4c6ac;
+    --c2: #fcffae;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Cabecera ---------- */
+  header{
+    position: relative;
+    padding: 48px 20px 36px;
+    text-align: center;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(142,68,173,.05), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(41,171,226,.06), transparent 40%);
+  }
+  header::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ctext x='10' y='70' font-size='40' fill='%23e8dfb0' opacity='0.5'%3E%F0%9F%A6%8B%3C/text%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    opacity: .35;
+    pointer-events: none;
+  }
+  .logo{
+    position: relative;
+    width: 108px; height: 108px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    margin-bottom: 14px;
+  }
+  h1{
+    position: relative;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 42px);
+    margin: 0 0 6px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header p{
+    position: relative;
+    margin: 0 auto;
+    max-width: 480px;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  /* ---------- Controles ---------- */
+  .controls{
+    max-width: 980px;
+    margin: -14px auto 0;
+    padding: 0 20px 8px;
+    position: relative;
+  }
+  .search{
+    display:block;
+    width:100%;
+    padding: 14px 20px;
+    border-radius: 999px;
+    border: 2px solid var(--line);
+    background: var(--bg-card);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search:focus{ border-color: var(--purple); }
+
+  .tabs{
+    display:flex; gap: 8px; justify-content:center;
+    margin: 18px 0 8px;
+  }
+  .tab-btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    cursor:pointer;
+    background: transparent;
+    color: var(--ink-soft);
+    transition: all .15s;
+  }
+  .tab-btn.active{
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    color: white;
+  }
+
+  .filter-group{ margin: 14px 0; }
+  .filter-label{
+    font-family:'Baloo 2', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+    margin: 0 0 8px 4px;
+  }
+  .pill-row{
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .pill{
+    border: 2px solid transparent;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    color: var(--ink);
+    opacity: .55;
+    transition: all .15s;
+  }
+  .pill.active{ opacity: 1; border-color: rgba(0,0,0,.15); transform: translateY(-1px); }
+  .pill:hover{ opacity: .85; }
+
+  .clear-link{
+    display:inline-block;
+    margin: 4px 0 0 4px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    cursor: pointer;
+    background:none; border:none; font-family:'Nunito',sans-serif;
+  }
+
+  /* ---------- Resultados ---------- */
+  main{ max-width: 980px; margin: 0 auto; padding: 12px 20px 60px; }
+  .count{ font-size: 13px; color: var(--ink-soft); margin: 10px 4px 16px; }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .card{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 16px 14px;
+    display:flex; flex-direction:column; gap:10px;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.06); }
+  .card h3{
+    font-family:'Baloo 2', sans-serif;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.3;
+  }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag{
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    color: var(--ink);
+  }
+  .card-footer{
+    margin-top: auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+  }
+  .type-badge{ font-size: 11px; color: var(--ink-soft); }
+  .open-link{
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+
+  .empty, .loading{
+    text-align:center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+  }
+  .empty span, .loading span{ font-size: 34px; display:block; margin-bottom: 10px; }
+
+  footer{
+    text-align:center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px){
+    header{ padding: 36px 16px 28px; }
+    .logo{ width: 84px; height: 84px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo BaliTeacher" class="logo">
+  <h1>Glosario de recursos</h1>
+  <p>Materiales de aula y enlaces guardados, organizados por categoría y nivel &mdash; @baliteacher</p>
+</header>
+
+<div class="controls">
+  <input class="search" id="searchInput" type="text" placeholder="🔍 Buscar un recurso por nombre...">
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="glosario">📚 Recursos</button>
+    <button class="tab-btn" data-tab="enlaces">🔗 Enlaces web</button>
+  </div>
+
+  <div class="filter-group">
+    <div class="filter-label">Categoría</div>
+    <div class="pill-row" id="categoryFilters"></div>
+  </div>
+
+  <div class="filter-group">
+    <div class="filter-label">Nivel</div>
+    <div class="pill-row" id="levelFilters"></div>
+  </div>
+
+  <button class="clear-link" id="clearFilters">Borrar filtros</button>
+</div>
+
+<main>
+  <div class="count" id="resultCount"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>Glosario personal de @baliteacher · actualizado desde Google Sheets</footer>
+
+<script>
+/* =========================================================
+   CONFIGURA AQUÍ TUS DOS ENLACES CSV (uno por pestaña)
+   Cómo conseguirlos:
+   1. En tu Google Sheet: Archivo > Compartir > Publicar en la web
+   2. Elige la pestaña "Glosario", formato CSV, publica, copia el enlace
+   3. Repite eligiendo la pestaña "Enlaces web"
+   4. Pega los dos enlaces abajo, entre comillas
+   ========================================================= */
+  const CSV_GLOSARIO = "PEGA_AQUI_TU_ENLACE_CSV_DE_GLOSARIO";
+  const CSV_ENLACES  = "PEGA_AQUI_TU_ENLACE_CSV_DE_ENLACES_WEB";
+/* ========================================================= */
+
+  const CATEGORY_COLORS = {
+    grammar: '#96F099', vocabulary: '#aeeae8', games: '#c2b3f4', tasks: '#f1bada',
+    writing: '#f4c6ac', reading: '#fcffae', listening: '#a8d4f5', speaking: '#f4a6a6',
+    culture: '#b8f4d8', mediation: '#e0c9a6'
+  };
+  const LEVEL_COLORS = {
+    a1: '#96F099', a2: '#aeeae8', b1: '#c2b3f4', b2: '#f1bada', c1: '#f4c6ac', c2: '#fcffae'
+  };
+
+  let glosarioData = [];
+  let enlacesData = [];
+  let currentTab = 'glosario';
+  let activeCategories = new Set();
+  let activeLevels = new Set();
+
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for(let i=0; i<text.length; i++){
+      const c = text[i], next = text[i+1];
+      if(inQuotes){
+        if(c === '"' && next === '"'){ field += '"'; i++; }
+        else if(c === '"'){ inQuotes = false; }
+        else field += c;
+      } else {
+        if(c === '"') inQuotes = true;
+        else if(c === ','){ row.push(field); field=''; }
+        else if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+        else if(c === '\r'){ /* skip */ }
+        else field += c;
+      }
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows.filter(r => r.some(c => c.trim() !== ''));
+  }
+
+  function toObjects(rows){
+    const headers = rows[0].map(h => h.trim().toLowerCase());
+    return rows.slice(1).map(r => {
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = (r[i]||'').trim());
+      return obj;
+    });
+  }
+
+  function splitTags(str){
+    return str.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  async function loadData(){
+    document.getElementById('grid').innerHTML = '<div class="loading"><span>🦋</span>Cargando tus recursos...</div>';
+
+    if(CSV_GLOSARIO.startsWith('PEGA_AQUI') || CSV_ENLACES.startsWith('PEGA_AQUI')){
+      document.getElementById('grid').innerHTML =
+        '<div class="empty"><span>⚙️</span>Falta configurar los enlaces CSV de tu Google Sheet.<br>Edita las variables CSV_GLOSARIO y CSV_ENLACES al principio del &lt;script&gt;.</div>';
+      return;
+    }
+
+    try{
+      const [gTxt, eTxt] = await Promise.all([
+        fetch(CSV_GLOSARIO).then(r => r.text()),
+        fetch(CSV_ENLACES).then(r => r.text())
+      ]);
+
+      glosarioData = toObjects(parseCSV(gTxt)).map(o => ({
+        nombre: o['nombre del recurso'] || o['nombre'] || '',
+        etiquetas: splitTags(o['etiquetas'] || ''),
+        niveles: splitTags(o['niveles'] || ''),
+        enlace: o['enlace'] || o['url'] || '',
+        tipo: o['tipo'] || '',
+        fecha: o['última modificación'] || o['ultima modificacion'] || ''
+      }));
+
+      enlacesData = toObjects(parseCSV(eTxt)).map(o => ({
+        nombre: o['nombre'] || '',
+        etiquetas: splitTags(o['etiquetas'] || ''),
+        niveles: splitTags(o['niveles'] || ''),
+        enlace: o['url'] || o['enlace'] || '',
+        tipo: 'Enlace web',
+        fecha: ''
+      }));
+
+      buildFilterPills();
+      render();
+    } catch(err){
+      document.getElementById('grid').innerHTML =
+        '<div class="empty"><span>😕</span>No se pudieron cargar los datos. Revisa que la Sheet esté publicada como CSV y que el enlace sea correcto.</div>';
+      console.error(err);
+    }
+  }
+
+  function buildFilterPills(){
+    const catWrap = document.getElementById('categoryFilters');
+    catWrap.innerHTML = '';
+    Object.keys(CATEGORY_COLORS).forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'pill';
+      btn.textContent = cat;
+      btn.style.background = CATEGORY_COLORS[cat];
+      btn.onclick = () => {
+        activeCategories.has(cat) ? activeCategories.delete(cat) : activeCategories.add(cat);
+        btn.classList.toggle('active');
+        render();
+      };
+      catWrap.appendChild(btn);
+    });
+
+    const lvlWrap = document.getElementById('levelFilters');
+    lvlWrap.innerHTML = '';
+    Object.keys(LEVEL_COLORS).forEach(lvl => {
+      const btn = document.createElement('button');
+      btn.className = 'pill';
+      btn.textContent = lvl.toUpperCase();
+      btn.style.background = LEVEL_COLORS[lvl];
+      btn.onclick = () => {
+        activeLevels.has(lvl) ? activeLevels.delete(lvl) : activeLevels.add(lvl);
+        btn.classList.toggle('active');
+        render();
+      };
+      lvlWrap.appendChild(btn);
+    });
+  }
+
+  function render(){
+    const data = currentTab === 'glosario' ? glosarioData : enlacesData;
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+    const filtered = data.filter(item => {
+      const matchesQuery = !query || item.nombre.toLowerCase().includes(query);
+      const itemCats = item.etiquetas.map(t => t.toLowerCase());
+      const itemLvls = item.niveles.map(t => t.toLowerCase());
+      const matchesCat = activeCategories.size === 0 || [...activeCategories].some(c => itemCats.includes(c));
+      const matchesLvl = activeLevels.size === 0 || [...activeLevels].some(l => itemLvls.includes(l));
+      return matchesQuery && matchesCat && matchesLvl;
+    });
+
+    const grid = document.getElementById('grid');
+    document.getElementById('resultCount').textContent = filtered.length + ' recurso' + (filtered.length===1?'':'s');
+
+    if(filtered.length === 0){
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span>🔎</span>No hay recursos con esos filtros.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(item => `
+      <div class="card">
+        <h3>${escapeHtml(item.nombre)}</h3>
+        <div class="tag-row">
+          ${item.etiquetas.map(t => `<span class="tag" style="background:${CATEGORY_COLORS[t.toLowerCase()]||'#eee'}">${escapeHtml(t)}</span>`).join('')}
+          ${item.niveles.map(l => `<span class="tag" style="background:${LEVEL_COLORS[l.toLowerCase()]||'#eee'}">${escapeHtml(l.toUpperCase())}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <span class="type-badge">${escapeHtml(item.tipo)}</span>
+          ${item.enlace ? `<a class="open-link" href="${item.enlace}" target="_blank" rel="noopener">Abrir</a>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      render();
+    };
+  });
+
+  document.getElementById('searchInput').addEventListener('input', render);
+
+  document.getElementById('clearFilters').onclick = () => {
+    activeCategories.clear();
+    activeLevels.clear();
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    render();
+  };
+
+  loadData();
+</script>
+</body>
+</html>
