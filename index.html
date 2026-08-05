@@ -283,7 +283,7 @@
    4. Pega los dos enlaces abajo, entre comillas
    ========================================================= */
   const CSV_GLOSARIO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC1ST1gHiHU4BY1dAxJWskn98UlerQy3kZ-iw6ST7KfJiAH6IKMyK9jyjuigiAf2P9lIsiFqydcIYQ/pub?gid=282313508&single=true&output=csv";
-  const CSV_ENLACES  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC1ST1gHiHU4BY1dAxJWskn98UlerQy3kZ-iw6ST7KfJiAH6IKMyK9jyjuigiAf2P9lIsiFqydcIYQ/pub?gid=282313508&single=true&output=csv";
+  const CSV_ENLACES  = "PEGA_AQUI_TU_ENLACE_CSV_DE_ENLACES_WEB";
 /* ========================================================= */
 
   const CATEGORY_COLORS = {
@@ -295,8 +295,12 @@
     a1: '#96F099', a2: '#aeeae8', b1: '#c2b3f4', b2: '#f1bada', c1: '#f4c6ac', c2: '#fcffae'
   };
 
-  let glosarioData = [];
+let glosarioData = [];
   let enlacesData = [];
+  // status: 'not-configured' | 'loading' | 'ok' | 'error'
+  let glosarioStatus = 'loading';
+  let enlacesStatus = 'loading';
+
   let currentTab = 'glosario';
   let activeCategories = new Set();
   let activeLevels = new Set();
@@ -335,22 +339,15 @@
     return str.split(',').map(s => s.trim()).filter(Boolean);
   }
 
-  async function loadData(){
-    document.getElementById('grid').innerHTML = '<div class="loading"><span>🦋</span>Cargando tus recursos...</div>';
-
-    if(CSV_GLOSARIO.startsWith('PEGA_AQUI') || CSV_ENLACES.startsWith('PEGA_AQUI')){
-      document.getElementById('grid').innerHTML =
-        '<div class="empty"><span>⚙️</span>Falta configurar los enlaces CSV de tu Google Sheet.<br>Edita las variables CSV_GLOSARIO y CSV_ENLACES al principio del &lt;script&gt;.</div>';
+  async function loadGlosario(){
+    if(!CSV_GLOSARIO || CSV_GLOSARIO.startsWith('PEGA_AQUI')){
+      glosarioStatus = 'not-configured';
+      if(currentTab === 'glosario') render();
       return;
     }
-
     try{
-      const [gTxt, eTxt] = await Promise.all([
-        fetch(CSV_GLOSARIO).then(r => r.text()),
-        fetch(CSV_ENLACES).then(r => r.text())
-      ]);
-
-      glosarioData = toObjects(parseCSV(gTxt)).map(o => ({
+      const txt = await fetch(CSV_GLOSARIO).then(r => r.text());
+      glosarioData = toObjects(parseCSV(txt)).map(o => ({
         nombre: o['nombre del recurso'] || o['nombre'] || '',
         etiquetas: splitTags(o['etiquetas'] || ''),
         niveles: splitTags(o['niveles'] || ''),
@@ -358,8 +355,23 @@
         tipo: o['tipo'] || '',
         fecha: o['última modificación'] || o['ultima modificacion'] || ''
       }));
+      glosarioStatus = 'ok';
+    } catch(err){
+      console.error(err);
+      glosarioStatus = 'error';
+    }
+    if(currentTab === 'glosario') render();
+  }
 
-      enlacesData = toObjects(parseCSV(eTxt)).map(o => ({
+  async function loadEnlaces(){
+    if(!CSV_ENLACES || CSV_ENLACES.startsWith('PEGA_AQUI')){
+      enlacesStatus = 'not-configured';
+      if(currentTab === 'enlaces') render();
+      return;
+    }
+    try{
+      const txt = await fetch(CSV_ENLACES).then(r => r.text());
+      enlacesData = toObjects(parseCSV(txt)).map(o => ({
         nombre: o['nombre'] || '',
         etiquetas: splitTags(o['etiquetas'] || ''),
         niveles: splitTags(o['niveles'] || ''),
@@ -367,14 +379,12 @@
         tipo: 'Enlace web',
         fecha: ''
       }));
-
-      buildFilterPills();
-      render();
+      enlacesStatus = 'ok';
     } catch(err){
-      document.getElementById('grid').innerHTML =
-        '<div class="empty"><span>😕</span>No se pudieron cargar los datos. Revisa que la Sheet esté publicada como CSV y que el enlace sea correcto.</div>';
       console.error(err);
+      enlacesStatus = 'error';
     }
+    if(currentTab === 'enlaces') render();
   }
 
   function buildFilterPills(){
@@ -409,7 +419,25 @@
     });
   }
 
+  function statusMessage(status, tipo){
+    if(status === 'loading') return '<div class="loading"><span>🦋</span>Cargando tus recursos...</div>';
+    if(status === 'not-configured') return `<div class="empty"><span>🔗</span>Aún no has añadido el enlace CSV de ${tipo}.<br>Edita la variable correspondiente al principio del &lt;script&gt;.</div>`;
+    if(status === 'error') return `<div class="empty"><span>😕</span>No se pudo cargar ${tipo}. Revisa que la Sheet esté publicada como CSV y que el enlace sea correcto.</div>`;
+    return null;
+  }
+
   function render(){
+    const grid = document.getElementById('grid');
+    const status = currentTab === 'glosario' ? glosarioStatus : enlacesStatus;
+    const tipoLabel = currentTab === 'glosario' ? 'glosario' : 'enlaces web';
+
+    const msg = statusMessage(status, tipoLabel);
+    if(msg){
+      grid.innerHTML = msg;
+      document.getElementById('resultCount').textContent = '';
+      return;
+    }
+
     const data = currentTab === 'glosario' ? glosarioData : enlacesData;
     const query = document.getElementById('searchInput').value.trim().toLowerCase();
 
@@ -422,7 +450,6 @@
       return matchesQuery && matchesCat && matchesLvl;
     });
 
-    const grid = document.getElementById('grid');
     document.getElementById('resultCount').textContent = filtered.length + ' recurso' + (filtered.length===1?'':'s');
 
     if(filtered.length === 0){
@@ -469,7 +496,10 @@
     render();
   };
 
-  loadData();
+  buildFilterPills();
+  render();
+  loadGlosario();
+  loadEnlaces();
 </script>
 </body>
 </html>
